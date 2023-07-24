@@ -1,0 +1,60 @@
+{
+    "students": [
+        {
+            "_code": "000001",
+            "_name": "John Doe",
+            "_address": "123 Main St",
+            "_email": "johndoe@example.com",
+            "_math": 9,
+            "_physics": 8.5,
+            "_chemistry": 9.5
+        },
+        {
+            "_code": "000002",
+            "_name": "Jane Smith",
+            "_address": "456 Elm St",
+            "_email": "janesmith@example.com",
+            "_math": 8,
+            "_physics": 7.5,
+            "_chemistry": 8.5
+        }
+    ],
+    "employees": [
+        {
+            "_code": "000003",
+            "_name": "Bob Johnson",
+            "_address": "789 Oak St",
+            "_email": "bobjohnson@example.com",
+            "_day": 20,
+            "_wage": 150000
+        },
+        {
+            "_code": "000004",
+            "_name": "Alice Williams",
+            "_address": "321 Pine St",
+            "_email": "alicewilliams@example.com",
+            "_day": 22,
+            "_wage": 200000
+        }
+    ],
+    "customers": [
+        {
+            "_code": "000005",
+            "_name": "Tom Brown",
+            "_address": "159 Maple St",
+            "_email": "tombrown@example.com",
+            "_company": "AFF Co,Ltd",
+            "_invoice": "INV001",
+            "_rating": 4.5
+        },
+        {
+            "_code": "000006",
+            "_name": "Tom Clancy",
+            "_address": "159 Maple St",
+            "_email": "tombrown@example.com",
+            "_company": "AFF Co,Ltd",
+            "_invoice": "12000000",
+            "_rating": 4.5
+        }
+    ]
+}
