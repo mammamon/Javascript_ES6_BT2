@@ -172,34 +172,59 @@ function handleAddButtonClick(event) {
 
 
 
-// Event listener for the Delete button in the modal
-$('#btnDelete').on('click', function () {
-  const deleteCode = $('#delete-code').val();
-  const listPerson = new ListPerson();
-  const list = listPerson.getList();
+const listPerson = new ListPerson();
 
-  const personIndex = list.findIndex((person) => person._code === deleteCode);
+async function deletePerson() {
+  try {
+    const data = await getListPerson();
+    const deleteCode = $('#delete-code').val();
+    const persons = data.list;
 
-  if (personIndex !== -1) {
-    listPerson.delete(deleteCode);
-    // Perform any additional actions you want after successful delete
-    alert('Person deleted successfully!');
+    const personIndex = persons.findIndex((person) => person.code === deleteCode);
 
-    // Close the modal
-    closeDeleteModal();
-  } else {
-    $('#delete-info').text('Person with the provided code not found.');
+    if (personIndex !== -1) {
+      // Perform the delete operation
+      persons.splice(personIndex, 1);
+
+      // Update the data in localStorage or wherever you are storing it
+      // Since you don't have an updateListPerson() function, I assume you update the data directly.
+      // If it's stored in localStorage, you can do:
+      // localStorage.setItem('listPersonData', JSON.stringify(data));
+
+      // Perform any additional actions you want after successful delete
+      alert('Person deleted successfully!');
+
+      // Close the modal
+      $('#delete-modal').modal('hide');
+
+      // Re-render the updated list
+      renderListPerson(data);
+    } else {
+      $('#delete-info').text('Person with the provided code not found.');
+    }
+  } catch (error) {
+    console.error(error);
+    $('#delete-info').text('Error occurred while retrieving data or no data found.');
   }
-});
+}
+
+// Event listener for the Delete button in the modal
+$('#btnDelete').on('click', deletePerson);
 
 
-// Event listener to open the delete modal when a delete button is clicked in the table (Replace '.delete-button' with your actual class for the delete buttons in the table)
-$('.delete-button').on('click', function () {
-  const deleteCode = $(this).data('code');
-  $('#delete-code').val(deleteCode);
-  $('#delete-info').text(''); // Clear any previous error messages
-  openDeleteModal();
-});
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

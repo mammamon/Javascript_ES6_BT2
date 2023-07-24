@@ -45,31 +45,38 @@ class Customer extends Person {
 
 class ListPerson {
     constructor() {
-        this.list = [];
+      if (typeof ListPerson.instance === 'object') {
+        return ListPerson.instance;
+      }
+  
+      this.list = [];
+      ListPerson.instance = this;
+      return this;
     }
-
+  
     addPerson(person) {
-        this.list.push(person);
+      this.list.push(person);
     }
-
+  
     read(index) {
-        return this.list[index];
+      return this.list[index];
     }
-
+  
     update(code, person) {
-        const index = this.list.findIndex((p) => p.code === code);
-        if (index !== -1) {
-            this.list[index] = person;
-        }
+      const index = this.list.findIndex((p) => p._code === code);
+      if (index !== -1) {
+        this.list[index] = person;
+      }
     }
-
+  
     delete(code) {
-        const index = this.list.findIndex((p) => p.code === code);
-        if (index !== -1) {
-            this.list.splice(index, 1);
-        }
+      const index = this.list.findIndex((p) => p._code === code);
+      if (index !== -1) {
+        this.list.splice(index, 1);
+      }
     }
+  
     getList() {
-        return this.list
+      return this.list;
     }
-}
+  }
