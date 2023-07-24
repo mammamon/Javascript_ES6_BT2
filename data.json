@@ -2,59 +2,85 @@
     "students": [
         {
             "_code": "000001",
-            "_name": "John Doe",
-            "_address": "123 Main St",
-            "_email": "johndoe@example.com",
-            "_math": 9,
-            "_physics": 8.5,
-            "_chemistry": 9.5
+            "_name": "Tôn Ngộ Không",
+            "_address": "18th cloud layer",
+            "_email": "cloudchecker@79spells.buddha",
+            "_math": 7,
+            "_physics": 9.5,
+            "_chemistry": 10
         },
         {
             "_code": "000002",
-            "_name": "Jane Smith",
-            "_address": "456 Elm St",
-            "_email": "janesmith@example.com",
-            "_math": 8,
-            "_physics": 7.5,
-            "_chemistry": 8.5
+            "_name": "Maria Ozawa",
+            "_address": "JAV",
+            "_email": "marirenla@69.gay",
+            "_math": 6,
+            "_physics": 9,
+            "_chemistry": 8.25
+        },
+        {
+            "_code": "000003",
+            "_name": "Nobita",
+            "_address": "Tokyo",
+            "_email": "iloveshizuka@dorae.mon",
+            "_math": 2,
+            "_physics": 5,
+            "_chemistry": 4.25
         }
     ],
     "employees": [
         {
-            "_code": "000003",
-            "_name": "Bob Johnson",
-            "_address": "789 Oak St",
-            "_email": "bobjohnson@example.com",
-            "_day": 20,
-            "_wage": 150000
+            "_code": "000004",
+            "_name": "Lionel Messi",
+            "_address": "Inter Miami",
+            "_email": "messimisex@fake.goat",
+            "_day": 18,
+            "_wage": 1000000
         },
         {
-            "_code": "000004",
-            "_name": "Alice Williams",
-            "_address": "321 Pine St",
-            "_email": "alicewilliams@example.com",
-            "_day": 22,
-            "_wage": 200000
+            "_code": "000005",
+            "_name": "Quang",
+            "_address": "Dist.12, HCMC",
+            "_email": "quangnguyenonlinevn@gmail.com",
+            "_day": 20,
+            "_wage": 300000
+        },
+        {
+            "_code": "000006",
+            "_name": "Donna Chump",
+            "_address": "Florida, USA",
+            "_email": "donnachump@fatgirl.com",
+            "_day": 15,
+            "_wage": 990000
         }
     ],
     "customers": [
         {
-            "_code": "000005",
-            "_name": "Tom Brown",
-            "_address": "159 Maple St",
-            "_email": "tombrown@example.com",
-            "_company": "AFF Co,Ltd",
-            "_invoice": "INV001",
+            "_code": "000007",
+            "_name": "Agent 007",
+            "_address": "assasins guild",
+            "_email": "sevenxseven@777.seven",
+            "_company": "Black Organization",
+            "_invoice": "77000000",
             "_rating": 4.5
         },
         {
-            "_code": "000006",
-            "_name": "Tom Clancy",
-            "_address": "159 Maple St",
-            "_email": "tombrown@example.com",
-            "_company": "AFF Co,Ltd",
-            "_invoice": "12000000",
-            "_rating": 4.5
+            "_code": "000008",
+            "_name": "Elông Mút",
+            "_address": "LA, Việt Nam",
+            "_email": "mut@keokeo.com",
+            "_company": "X-corporation",
+            "_invoice": "50000000",
+            "_rating": 4.0
+        },
+        {
+            "_code": "000009",
+            "_name": "Nguyễn Thị Đảm Đang",
+            "_address": "El royale hotel",
+            "_email": "damdangconuong@gmail.com",
+            "_company": "500k/shot Foundation",
+            "_invoice": "690000",
+            "_rating": 3.5
         }
     ]
 }
