@@ -74,6 +74,24 @@ class ListPerson {
   getList() {
     return this.list;
   }
+
+  filter(selectedType) {
+    if (selectedType === "all") {
+      return this.list;
+    } else {
+      return this.list.filter((person) => {
+        if (
+          (selectedType === "student" && person instanceof Student) ||
+          (selectedType === "employee" && person instanceof Employee) ||
+          (selectedType === "customer" && person instanceof Customer)
+        ) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+    }
+  }
 }
 
 

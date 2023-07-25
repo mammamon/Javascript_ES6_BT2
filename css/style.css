@@ -1197,5 +1197,8 @@ form {
 #pagination .next {
   font-size: 16px;
 }
+.data-row {
+  cursor: pointer;
+}
 
 /*# sourceMappingURL=style.css.map */

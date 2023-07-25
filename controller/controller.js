@@ -1,30 +1,37 @@
+let listPerson;
 let listPersonInstance;
+let data;
+// Function to get the list of persons from the server
+// Function to get the list of persons from the server
 async function getListPerson() {
-  if (listPersonInstance) {
-    return listPersonInstance;
+  // Check if the listPerson instance has been set and return it if available
+  if (listPerson) {
+    return listPerson;
   }
 
   try {
     const response = await fetch('/data.json?_=' + new Date().getTime());
-    const data = await response.json();
-    const listPerson = new ListPerson();
+    const jsonData = await response.json();
 
-    data.students.forEach((student) => {
+    // Create a new ListPerson object and populate it with data
+    listPerson = new ListPerson();
+
+    jsonData.students.forEach((student) => {
       listPerson.addPerson(new Student(student));
     });
 
-    data.employees.forEach((employee) => {
+    jsonData.employees.forEach((employee) => {
       listPerson.addPerson(new Employee(employee));
     });
 
-    data.customers.forEach((customer) => {
+    jsonData.customers.forEach((customer) => {
       listPerson.addPerson(new Customer(customer));
     });
 
-    listPersonInstance = listPerson;
     return listPerson;
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    alert('Error occurred while retrieving data or no data found.');
   }
 }
 
@@ -229,7 +236,7 @@ function populateInputModalWithPersonData(person) {
 async function editPerson() {
   try {
     const data = await getListPerson();
-    
+
     // Get the person code from the data attribute of the clicked row
     const personCode = $(this).data('person-code');
 
@@ -251,17 +258,14 @@ async function editPerson() {
       $('#input-modal').modal('show');
 
       // Event listener for the Edit button in the modal
-      $('#btnEdit').off('click').on('click', async () => {
-        const editedData = getInput();
-        const { personType, code, name, address, email, typeData } = editedData;
+      $('#btnEdit').on('click', async function () {
+        try {
+          const { personType, code, name, address, email, typeData } = getInput();
 
-        // Validate the edited data without checking duplicates
-        const isValid = await validateInput(data, personType, code, false, name, address, email, false, typeData);
-
-        if (isValid) {
-          let editedPerson;
+          // Create the updated person object based on the person type
+          let updatedPerson;
           if (personType === 'student') {
-            editedPerson = new Student({
+            updatedPerson = new Student({
               _code: code,
               _name: name,
               _address: address,
@@ -271,7 +275,7 @@ async function editPerson() {
               _chemistry: parseFloat(typeData.chemistry),
             });
           } else if (personType === 'employee') {
-            editedPerson = new Employee({
+            updatedPerson = new Employee({
               _code: code,
               _name: name,
               _address: address,
@@ -280,7 +284,7 @@ async function editPerson() {
               _wage: parseInt(typeData.wage),
             });
           } else if (personType === 'customer') {
-            editedPerson = new Customer({
+            updatedPerson = new Customer({
               _code: code,
               _name: name,
               _address: address,
@@ -291,14 +295,20 @@ async function editPerson() {
             });
           }
 
-          if (editedPerson) {
-            data.update(personCode, editedPerson);
-            renderListPerson(data);
-            alert('Person edited successfully!');
-            $('#input-modal').modal('hide');
-          }
-        } else {
-          alert('Vui lòng kiểm tra lại thông tin nhập');
+          // Perform the update operation
+          data.update(code, updatedPerson);
+
+          // Close the modal
+          $('#input-modal').modal('hide');
+
+          // Re-render the updated list
+          renderListPerson(data);
+
+          // Show a success message
+          alert('Person updated successfully!');
+        } catch (error) {
+          console.error(error);
+          alert('Error occurred while updating the person.');
         }
       });
     } else {
@@ -377,5 +387,26 @@ const openInputModalWithPersonData = (personCode, personType) => {
     $('#input-modal').modal('hide');
   });
 };
+
+
+$(document).ready(function() {
+  // Create a new ListPerson object
+  listPerson = new ListPerson();
+
+  // Get the list of persons from the server
+  getListPerson().then((data) => {
+    listPerson.list = data.list;
+    renderListPerson(listPerson);
+  });
+
+  // Event listener for filter dropdown changes
+  $(".filter-person-type").on("change", function() {
+    const selectedType = $(this).val();
+    const filteredPersons = listPerson.filter(selectedType);
+    renderListPerson({ list: filteredPersons });
+  });
+});
+
+
 
 
