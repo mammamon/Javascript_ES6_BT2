@@ -1,6 +1,6 @@
 const renderListPerson = (listPerson) => {
   const tableBody = document.querySelector("#list-person-table");
-  tableBody.innerHTML = ""; // Clear existing table content
+  tableBody.innerHTML = "";
 
   listPerson.list.forEach((person) => {
       let avgScore = "";

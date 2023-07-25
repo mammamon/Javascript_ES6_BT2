@@ -1,5 +1,9 @@
-//lấy data từ data.json
+let listPersonInstance;
 async function getListPerson() {
+  if (listPersonInstance) {
+    return listPersonInstance;
+  }
+
   try {
     const response = await fetch('/data.json?_=' + new Date().getTime());
     const data = await response.json();
@@ -17,7 +21,8 @@ async function getListPerson() {
       listPerson.addPerson(new Customer(customer));
     });
 
-    return listPerson; // Return the listPerson object
+    listPersonInstance = listPerson;
+    return listPerson;
   } catch (error) {
     console.log(error);
   }
@@ -26,7 +31,6 @@ async function getListPerson() {
 getListPerson().then((listPerson) => {
   renderListPerson(listPerson);
 });
-
 
 
 //lấy thông tin từ người dùng
@@ -62,17 +66,12 @@ const getInput = () => {
 };
 
 
-
-
-
-//tạo 
-async function addPersonToList() {
-  const data = await getListPerson(); // Retrieve the existing data
+// thêm người dùng mới
+async function addPerson() {
+  const data = await getListPerson();
   const { personType, code, name, address, email, typeData } = getInput();
-
-  // Validate the input data
+  // check valid có kiểm tra trùng code và email
   const isValid = await validateInput(data, personType, code, true, name, address, email, true, typeData);
-
   if (isValid) {
     let newPerson;
     if (personType === 'student') {
@@ -105,99 +104,31 @@ async function addPersonToList() {
         _rating: parseFloat(typeData.rating),
       });
     }
-
     if (newPerson) {
-      data.addPerson(newPerson); // Add the new person to the list
-      renderListPerson(data); // Render the updated list
-
-      // Show success alert to the user
-      alert('New person added successfully!');
+      data.addPerson(newPerson);
+      renderListPerson(data);
+      alert('Thêm người dùng mới thành công!');
       $('#btnClose').trigger('click');
     }
   } else {
-    // Show error alert to the user
-    alert('Validation failed! Please check your inputs.');
+    alert('Vui lòng kiểm tra lại thông tin nhập');
   }
 }
 
-document.getElementById('btnAdd').addEventListener('click', addPersonToList);
+document.getElementById('btnAdd').addEventListener('click', addPerson);
 
 
-function handleAddButtonClick(event) {
-  event.preventDefault(); // Prevent the default form submission behavior
-
-  const personTypeRadios = document.querySelectorAll('.person-type');
-  let personType = '';
-  personTypeRadios.forEach(radio => {
-    if (radio.checked) {
-      personType = radio.value;
-    }
-  });
-  const code = document.getElementById('code').value;
-  const name = document.getElementById('name').value;
-  const address = document.getElementById('address').value;
-  const email = document.getElementById('email').value;
-  let typeData = {};
-  if (personType === 'student') {
-    typeData.math = document.getElementById('math').value;
-    typeData.physics = document.getElementById('physics').value;
-    typeData.chemistry = document.getElementById('chemistry').value;
-  } else if (personType === 'employee') {
-    typeData.day = document.getElementById('day').value;
-    typeData.wage = document.getElementById('wage').value;
-  } else if (personType === 'customer') {
-    typeData.company = document.getElementById('customerName').value;
-    typeData.invoice = document.getElementById('invoice').value;
-    typeData.rating = document.getElementById('rating').value;
-  }
-
-  // Validate the input data
-  const isValid = validateInput(data, personType, code, false, name, address, email, false, typeData);
-
-  // Log the value of isValid
-  console.log('isValid:', isValid);
-
-  // If the input data is valid, proceed with adding the person
-  if (isValid) {
-    const person = createPersonObject(personType, code, name, address, email, typeData);
-    data.list.push(person);
-    renderListPerson(data);
-  } else {
-    console.log('Form data is invalid. Please fill in all required fields and check the input format.');
-  }
-}
-
-
-
-
-
-
-const listPerson = new ListPerson();
-
+// xóa người dùng
 async function deletePerson() {
   try {
     const data = await getListPerson();
     const deleteCode = $('#delete-code').val();
     const persons = data.list;
-
     const personIndex = persons.findIndex((person) => person.code === deleteCode);
-
     if (personIndex !== -1) {
-      // Perform the delete operation
-      persons.splice(personIndex, 1);
-
-      // Update the data in localStorage or wherever you are storing it
-      // Since you don't have an updateListPerson() function, I assume you update the data directly.
-      // If it's stored in localStorage, you can do:
-      // localStorage.setItem('listPersonData', JSON.stringify(data));
-
-      // Perform any additional actions you want after successful delete
+      data.deletePerson(deleteCode);
       alert('Person deleted successfully!');
-
-      // Close the modal
       $('#delete-modal').modal('hide');
-
-      // Re-render the updated list
       renderListPerson(data);
     } else {
       $('#delete-info').text('Person with the provided code not found.');
@@ -207,35 +138,7 @@ async function deletePerson() {
     $('#delete-info').text('Error occurred while retrieving data or no data found.');
   }
 }
-
-// Event listener for the Delete button in the modal
 $('#btnDelete').on('click', deletePerson);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
