@@ -1,44 +1,23 @@
 let listPerson;
 let listPersonInstance;
-let data;
-// Function to get the list of persons from the server
-// Function to get the list of persons from the server
 async function getListPerson() {
   // Check if the listPerson instance has been set and return it if available
   if (listPerson) {
     return listPerson;
   }
 
-  try {
-    const response = await fetch('/data.json?_=' + new Date().getTime());
-    const jsonData = await response.json();
+  // Create a new ListPerson object
+  listPerson = new ListPerson();
 
-    // Create a new ListPerson object and populate it with data
-    listPerson = new ListPerson();
-
-    jsonData.students.forEach((student) => {
-      listPerson.addPerson(new Student(student));
-    });
-
-    jsonData.employees.forEach((employee) => {
-      listPerson.addPerson(new Employee(employee));
-    });
-
-    jsonData.customers.forEach((customer) => {
-      listPerson.addPerson(new Customer(customer));
-    });
-
-    return listPerson;
-  } catch (error) {
-    console.error(error);
-    alert('Error occurred while retrieving data or no data found.');
-  }
+  return listPerson;
 }
 
 getListPerson().then((listPerson) => {
   renderListPerson(listPerson);
 });
 
+
+console.log("listPerson: ", listPerson);
 
 //lấy thông tin từ người dùng
 const getInput = () => {
@@ -153,6 +132,8 @@ $('#btnDelete').on('click', deletePerson);
 $('#btn-modal').on('click', function () {
   $('#btnAdd').css('display', 'inline-block');
   $('#btnEdit').css('display', 'none');
+  $('.person-type').prop('disabled', false);
+  $('#code').prop('disabled', false);
 });
 
 
@@ -205,208 +186,119 @@ $(document).ready(() => {
 });
 
 
-// Edit an existing person
-// Function to populate the input-modal with the person's data
-function populateInputModalWithPersonData(person) {
-  // Set the person type radio button based on the person's type
-  $(`#${person.constructor.name.toLowerCase()}Radio`).prop('checked', true);
+// Add click event listener to each row with the class "edit-row"
+$("#list-person-table").on("click", ".edit-row", function () {
+  const personCode = $(this).data("person-code");
+  const personType = $(this).data("person-type");
+  $('#btnAdd').css('display', 'none');
+  $('#btnEdit').css('display', 'inline-block');
+  // Find the person with the specified code
+  const person = listPerson.list.find((p) => p.code === personCode);
 
-  // Set the general inputs
+  // Populate the input fields with the data of the person
   $('#code').val(person.code);
   $('#name').val(person.name);
   $('#address').val(person.address);
   $('#email').val(person.email);
 
-  // Set the specific inputs based on the person type
-  if (person instanceof Student) {
+  if (personType === 'student') {
     $('#math').val(person.math);
     $('#physics').val(person.physics);
     $('#chemistry').val(person.chemistry);
-  } else if (person instanceof Employee) {
+  } else if (personType === 'employee') {
     $('#day').val(person.day);
     $('#wage').val(person.wage);
-  } else if (person instanceof Customer) {
+  } else if (personType === 'customer') {
     $('#company').val(person.company);
     $('#invoice').val(person.invoice);
     $('#rating').val(person.rating);
   }
-}
 
-// Edit an existing person
-async function editPerson() {
-  try {
+  // Disable the radio buttons
+  $('.person-type').prop('disabled', true);
+  $('#code').prop('disabled', true);
+
+  // Show the #input-modal
+  $('#input-modal').modal('show');
+
+  // Add a click event listener to the #btnEdit button
+  $('#btnEdit').off('click').on('click', async function () {
     const data = await getListPerson();
+    const { code, name, address, email, typeData } = getInput();
+   
+    // Check if the input is valid
+    const isValid = await validateInput(data, personType, code, false, name, address, email, false, typeData);
 
-    // Get the person code from the data attribute of the clicked row
-    const personCode = $(this).data('person-code');
+    if (isValid) {
+      // Find the index of the person with the specified code
+      const personIndex = data.list.findIndex((p) => p.code === code);
 
-    // Find the person to be edited
-    const personToEdit = data.list.find((person) => person.code === personCode);
-
-    if (personToEdit) {
-      // Populate the input-modal with the person's data
-      populateInputModalWithPersonData(personToEdit);
-
-      // Set the data attribute for the btnEdit button
-      $('#btnEdit').data('person-code', personCode);
-
-      // Show the edit button and hide the add button in the modal
-      $('#btnAdd').hide();
-      $('#btnEdit').show();
-
-      // Open the input-modal
-      $('#input-modal').modal('show');
-
-      // Event listener for the Edit button in the modal
-      $('#btnEdit').on('click', async function () {
-        try {
-          const { personType, code, name, address, email, typeData } = getInput();
-
-          // Create the updated person object based on the person type
-          let updatedPerson;
-          if (personType === 'student') {
-            updatedPerson = new Student({
-              _code: code,
-              _name: name,
-              _address: address,
-              _email: email,
-              _math: parseFloat(typeData.math),
-              _physics: parseFloat(typeData.physics),
-              _chemistry: parseFloat(typeData.chemistry),
-            });
-          } else if (personType === 'employee') {
-            updatedPerson = new Employee({
-              _code: code,
-              _name: name,
-              _address: address,
-              _email: email,
-              _day: parseInt(typeData.day),
-              _wage: parseInt(typeData.wage),
-            });
-          } else if (personType === 'customer') {
-            updatedPerson = new Customer({
-              _code: code,
-              _name: name,
-              _address: address,
-              _email: email,
-              _company: typeData.company,
-              _invoice: parseInt(typeData.invoice),
-              _rating: parseFloat(typeData.rating),
-            });
-          }
-
-          // Perform the update operation
-          data.update(code, updatedPerson);
-
-          // Close the modal
-          $('#input-modal').modal('hide');
-
-          // Re-render the updated list
-          renderListPerson(data);
-
-          // Show a success message
-          alert('Person updated successfully!');
-        } catch (error) {
-          console.error(error);
-          alert('Error occurred while updating the person.');
+      if (personIndex !== -1) {
+        // Update the data of the selected person
+        if (personType === 'student') {
+          data.list[personIndex] = new Student({
+            _code: code,
+            _name: name,
+            _address: address,
+            _email: email,
+            _math: parseFloat(typeData.math),
+            _physics: parseFloat(typeData.physics),
+            _chemistry: parseFloat(typeData.chemistry),
+          });
+        } else if (personType === 'employee') {
+          data.list[personIndex] = new Employee({
+            _code: code,
+            _name: name,
+            _address: address,
+            _email: email,
+            _day: parseInt(typeData.day),
+            _wage: parseInt(typeData.wage),
+          });
+        } else if (personType === 'customer') {
+          data.list[personIndex] = new Customer({
+            _code: code,
+            _name: name,
+            _address: address,
+            _email: email,
+            _company: typeData.company,
+            _invoice: parseInt(typeData.invoice),
+            _rating: parseFloat(typeData.rating),
+          });
         }
-      });
+
+        // Save the updated list to local storage
+        data.saveToLocalStorage();
+
+        // Update the table with the new list of people
+        renderListPerson(data);
+
+        // Hide the #input-modal
+        $('#input-modal').modal('hide');
+
+        // Enable the radio buttons
+        $('.person-type').prop('disabled', false);
+
+        alert('Person updated successfully!');
+      }
     } else {
-      alert('Person with the provided code not found.');
+      alert('Please check your input and try again.');
     }
-  } catch (error) {
-    console.error(error);
-    alert('Error occurred while retrieving data or no data found.');
-  }
-}
-
-
-
-
-
-
-
-// Function to open the input modal and populate it with the person's data
-const openInputModalWithPersonData = (personCode, personType) => {
-  // Populate the input-modal with the person's data based on personCode and personType
-  const listPerson = listPersonInstance;
-
-  if (!listPerson) {
-    console.error("ListPerson instance not available.");
-    return;
-  }
-
-  const person = listPerson.list.find((p) => p.code === personCode);
-  if (!person) {
-    console.error("Person not found.");
-    return;
-  }
-
-  // Set the person type radio button based on the personType
-  $(`.person-type[value="${personType}"]`).prop("checked", true);
-
-  // Enable inputs based on the person type
-  enableInputsByPersonType(personType);
-
-  // Set general inputs
-  $("#code").val(person.code);
-  $("#name").val(person.name);
-  $("#address").val(person.address);
-  $("#email").val(person.email);
-
-  // Set specific inputs based on the person type
-  if (personType === "student") {
-    $("#math").val(person.math);
-    $("#physics").val(person.physics);
-    $("#chemistry").val(person.chemistry);
-  } else if (personType === "employee") {
-    $("#day").val(person.day);
-    $("#wage").val(person.wage);
-  } else if (personType === "customer") {
-    $("#company").val(person.company);
-    $("#invoice").val(person.invoice);
-    $("#rating").val(person.rating);
-  }
-
-  // Show the input-modal
-  $("#input-modal").modal("show");
-  // Event listener for the Edit button in the modal
-  $('#btnEdit').off('click').on('click', async () => {
-    const editedPerson = getInput(personType);
-
-    // Perform any additional validation if required
-    // ...
-
-    // Update the person in the ListPerson
-    data.update(personCode, editedPerson);
-
-    // Render the updated list
-    renderListPerson(data);
-
-    // Close the modal
-    $('#input-modal').modal('hide');
-  });
-};
-
-
-$(document).ready(function() {
-  // Create a new ListPerson object
-  listPerson = new ListPerson();
-
-  // Get the list of persons from the server
-  getListPerson().then((data) => {
-    listPerson.list = data.list;
-    renderListPerson(listPerson);
-  });
-
-  // Event listener for filter dropdown changes
-  $(".filter-person-type").on("change", function() {
-    const selectedType = $(this).val();
-    const filteredPersons = listPerson.filter(selectedType);
-    renderListPerson({ list: filteredPersons });
   });
 });
 
+async function filterListPerson() {
+  const data = await getListPerson();
+  const selectedType = $('.filter-person-type').val();
+  const filteredList = data.filter(selectedType);
+  renderListPerson(filteredList);
+}
 
 
+
+$('.filter-person-type').on('change', filterListPerson);
+
+
+
+// testing
+// localStorage.clear();
 
