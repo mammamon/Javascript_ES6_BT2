@@ -182,7 +182,7 @@ $(document).ready(() => {
   setDefaultPersonType();
 
   // Enable inputs for the default person type (Student in this case)
-  enableInputsByPersonType('student');
+  enableInputsByPersonType();
 });
 
 
@@ -202,13 +202,19 @@ $("#list-person-table").on("click", ".edit-row", function () {
   $('#email').val(person.email);
 
   if (personType === 'student') {
+    $('#studentRadio').prop('checked', true);
+    enableInputsByPersonType('student');
     $('#math').val(person.math);
     $('#physics').val(person.physics);
     $('#chemistry').val(person.chemistry);
   } else if (personType === 'employee') {
+    $('#employeeRadio').prop('checked', true);
+    enableInputsByPersonType('employee');
     $('#day').val(person.day);
     $('#wage').val(person.wage);
   } else if (personType === 'customer') {
+    $('#customerRadio').prop('checked', true);
+    enableInputsByPersonType('customer');
     $('#company').val(person.company);
     $('#invoice').val(person.invoice);
     $('#rating').val(person.rating);
@@ -225,7 +231,7 @@ $("#list-person-table").on("click", ".edit-row", function () {
   $('#btnEdit').off('click').on('click', async function () {
     const data = await getListPerson();
     const { code, name, address, email, typeData } = getInput();
-   
+
     // Check if the input is valid
     const isValid = await validateInput(data, personType, code, false, name, address, email, false, typeData);
 
