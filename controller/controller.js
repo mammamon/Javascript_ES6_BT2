@@ -1,23 +1,21 @@
+// global scope
 let listPerson;
 let listPersonInstance;
+
+//lấy danh sách
 async function getListPerson() {
-  // Check if the listPerson instance has been set and return it if available
   if (listPerson) {
     return listPerson;
   }
-
-  // Create a new ListPerson object
   listPerson = new ListPerson();
-
   return listPerson;
 }
 
 getListPerson().then((listPerson) => {
   renderListPerson(listPerson);
 });
-
-
 console.log("listPerson: ", listPerson);
+
 
 //lấy thông tin từ người dùng
 const getInput = () => {
@@ -27,7 +25,6 @@ const getInput = () => {
   const address = $('#address').val();
   const email = $('#email').val();
   const typeData = {};
-
   if (personType === 'student') {
     typeData.math = $('#math').val();
     typeData.physics = $('#physics').val();
@@ -40,7 +37,6 @@ const getInput = () => {
     typeData.invoice = $('#invoice').val();
     typeData.rating = $('#rating').val();
   }
-
   return {
     personType,
     code,
@@ -101,31 +97,26 @@ async function addPerson() {
   }
 }
 
-document.getElementById('btnAdd').addEventListener('click', addPerson);
+$('#btnAdd').on('click', addPerson);
 
 
 // xóa người dùng
 async function deletePerson() {
-  try {
-    const data = await getListPerson();
-    const deleteCode = $('#delete-code').val();
-    const persons = data.list;
-    const personIndex = persons.findIndex((person) => person.code === deleteCode);
-    if (personIndex !== -1) {
-      data.deletePerson(deleteCode);
-      alert('Person deleted successfully!');
-      $('#delete-modal').modal('hide');
-      renderListPerson(data);
-    } else {
-      $('#delete-info').text('Person with the provided code not found.');
-    }
-  } catch (error) {
-    console.error(error);
-    $('#delete-info').text('Error occurred while retrieving data or no data found.');
+  const data = await getListPerson();
+  const deleteCode = $('#delete-code').val();
+  const persons = data.list;
+  const personIndex = persons.findIndex((person) => person.code === deleteCode);
+  if (personIndex !== -1) {
+    data.deletePerson(deleteCode);
+    alert('Xóa thành công');
+    $('#delete-modal').modal('hide');
+    renderListPerson(data);
+  } else {
+    $('#delete-info').text('Không tìm thấy người dùng nào mang mã này');
   }
 }
-$('#btnDelete').on('click', deletePerson);
 
+$('#btnDelete').on('click', deletePerson);
 
 
 // input mặc định cho modal thêm người mới
@@ -135,101 +126,93 @@ $('#btn-modal').on('click', function () {
   $(`#studentRadio`).prop('checked', true);
   $('.person-type').prop('disabled', false);
   $('#code').prop('disabled', false);
-  $('#code').prop('disabled', false);
-  
+  $('#day').prop('disabled', true);
+  $('#wage').prop('disabled', true);
+  $('#company').prop('disabled', true);
+  $('#invoice').prop('disabled', true);
+  $('#rating').prop('disabled', true);
+
 });
-
-
-
 
 
 // reset các đoạn text thông báo và input mỗi khi đóng modal
-const modal = $("#input-modal")[0];
+const modal = $("#input-modal, #delete-modal");
 const observer = new MutationObserver(function (mutations) {
   mutations.forEach(function (mutation) {
-    if (mutation.attributeName === "style" && $(modal).css("display") === "none") {
-      $(".check", modal).html("");
-      $("input[type='text'], input[type='number'], textarea", modal).val("");
+    if (mutation.attributeName === "style" && $(mutation.target).css("display") === "none") {
+      $(".check", mutation.target).html("");
+      $("input[type='text'], input[type='number'], textarea", mutation.target).val("");
     }
   });
 });
-observer.observe(modal, { attributes: true });
+modal.each(function () {
+  observer.observe(this, { attributes: true });
+});
 
 
-const resettypeInputs = () => {
+// reset tất cả input trong modal khi chọn loại đối tượng khác
+const resetTypeInput = () => {
   $('[id$="-input"] input, [id$="-input"] select, [id$="-input"] textarea').val('');
   $('.check').text('');
 };
 
-const enableInputsByPersonType = personType => {
-  // Enable/Disable General Inputs
-  $('#product-form .form-group:not(#student-input, #employee-input, #customer-input)').find('input, select, textarea').prop('disabled', !(personType === 'student' || personType === 'employee' || personType === 'customer'));
 
-  // Enable/Disable type Inputs
+// kích hoạt / vô hiệu các input dựa theo đối tượng đang chọn
+const personTypeInput = personType => {
+  $('#product-form .form-group:not(#student-input, #employee-input, #customer-input)').find('input, select, textarea').prop('disabled', !(personType === 'student' || personType === 'employee' || personType === 'customer'));
   $('[id$="-input"]').find('input, select, textarea').each(function () {
     $(this).prop('disabled', !($(this).closest('[id$="-input"]').attr('id') === `${personType}-input`));
   });
-
-  // Reset all type inputs (Student, Employee, and Customer)
-  resettypeInputs();
+  resetTypeInput();
 };
 
+$(document).ready(() => {
+  $('.person-type').on('change', event => personTypeInput(event.target.value));
+});
 
-// Add click event listener to each row with the class "edit-row"
+
+// mở modal cập nhật thông tin
 $("#list-person-table").on("click", ".edit-row", function () {
   const personCode = $(this).data("person-code");
   const personType = $(this).data("person-type");
   $('#btnAdd').css('display', 'none');
   $('#btnEdit').css('display', 'inline-block');
-  // Find the person with the specified code
   const person = listPerson.list.find((p) => p.code === personCode);
-
-  // Populate the input fields with the data of the person
   $('#code').val(person.code);
   $('#name').val(person.name);
   $('#address').val(person.address);
   $('#email').val(person.email);
-
   if (personType === 'student') {
     $('#studentRadio').prop('checked', true);
-    enableInputsByPersonType('student');
+    personTypeInput('student');
     $('#math').val(person.math);
     $('#physics').val(person.physics);
     $('#chemistry').val(person.chemistry);
   } else if (personType === 'employee') {
     $('#employeeRadio').prop('checked', true);
-    enableInputsByPersonType('employee');
+    personTypeInput('employee');
     $('#day').val(person.day);
     $('#wage').val(person.wage);
   } else if (personType === 'customer') {
     $('#customerRadio').prop('checked', true);
-    enableInputsByPersonType('customer');
+    personTypeInput('customer');
     $('#company').val(person.company);
     $('#invoice').val(person.invoice);
     $('#rating').val(person.rating);
   }
-
-  // Disable the radio buttons
+  // chặn thay đổi đối tượng và mã khi cập nhật
   $('.person-type').prop('disabled', true);
   $('#code').prop('disabled', true);
-
-  // Show the #input-modal
   $('#input-modal').modal('show');
-
-  // Add a click event listener to the #btnEdit button
+  // cập nhật thông tin người dùng
   $('#btnEdit').off('click').on('click', async function () {
     const data = await getListPerson();
     const { code, name, address, email, typeData } = getInput();
-
-    // Check if the input is valid
+    // check valid không kiểm tra trùng tên và email
     const isValid = await validateInput(data, personType, code, false, name, address, email, false, typeData);
-
     if (isValid) {
-      // Find the index of the person with the specified code
       const personIndex = data.list.findIndex((p) => p.code === code);
-
       if (personIndex !== -1) {
-        // Update the data of the selected person
         if (personType === 'student') {
           data.list[personIndex] = new Student({
             _code: code,
@@ -260,27 +243,20 @@ $("#list-person-table").on("click", ".edit-row", function () {
             _rating: parseFloat(typeData.rating),
           });
         }
-
-        // Save the updated list to local storage
         data.saveToLocalStorage();
-
-        // Update the table with the new list of people
         renderListPerson(data);
-
-        // Hide the #input-modal
         $('#input-modal').modal('hide');
-
-        // Enable the radio buttons
         $('.person-type').prop('disabled', false);
-
-        alert('Person updated successfully!');
+        alert('Cập nhật thông tin thành công');
       }
     } else {
-      alert('Please check your input and try again.');
+      alert('Vui lòng kiểm tra lại thông tin nhập');
     }
   });
 });
 
+
+// lọc danh sách theo lớp đối tượng
 async function filterListPerson() {
   const data = await getListPerson();
   const selectedType = $('.filter-person-type').val();
@@ -288,19 +264,5 @@ async function filterListPerson() {
   renderListPerson(filteredList);
 }
 
-
-
 $('.filter-person-type').on('change', filterListPerson);
 
-
-
-// testing
-// localStorage.clear();
-
-$(document).ready(() => {
-  $('.person-type').on('change', event => enableInputsByPersonType(event.target.value));
-
-  // Set default person type to 'student' on page load
-
-  // Enable inputs for the default person type (Student in this case)
-});

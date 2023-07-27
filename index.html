@@ -49,7 +49,7 @@
         <div class="table-title d-flex align-items-center px-3 py-2">
           <h3>DANH SÁCH NGƯỜI DÙNG</h3>
           <div class="d-flex">
-            <select class="btn filter-person-type me-2">
+            <select class="btn filter-person-type me-2" style="border: 1px solid #333;">
               <option value="all">Tất cả</option>
               <option value="student">Học sinh</option>
               <option value="employee">Nhân viên</option>
@@ -121,7 +121,7 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text"><i class="fa fa-key"></i></span>
                   </div>
-                  <input type="text" id="code" class="form-control input-sm" placeholder="Mã số">
+                  <input type="text" id="code" class="form-control input-sm" placeholder="Mã số (gồm 5 chữ số)">
                 </div>
                 <span class="check" id="check-code"></span>
               </div>
@@ -194,7 +194,7 @@
                       <span class="input-group-text"><i class="fa-solid fa-calendar-check"></i></span>
                     </div>
                     <input type="number" id="day" class="form-control input-sm no-spinner"
-                      placeholder="Số ngày làm việc">
+                      placeholder="Số ngày làm việc (từ 0 đến 25 ngày)">
                   </div>
                   <span class="check" id="check-day"></span>
                 </div>
@@ -204,7 +204,7 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="fa-solid fa-money-bill"></i></span>
                     </div>
-                    <input type="number" id="wage" class="form-control input-sm no-spinner" placeholder="Mức lương">
+                    <input type="number" id="wage" class="form-control input-sm no-spinner" placeholder="Mức lương theo ngày (từ 100k - 2 triệu)">
                   </div>
                   <span class="check" id="check-wage"></span>
                 </div>
@@ -227,7 +227,7 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="fa-solid fa-receipt"></i></i></span>
                     </div>
-                    <input type="text" id="invoice" class="form-control input-sm" placeholder="Giá hóa đơn">
+                    <input type="text" id="invoice" class="form-control input-sm" placeholder="Giá hóa đơn (trên 10k)">
                   </div>
                   <span class="check" id="check-invoice"></span>
                 </div>
@@ -237,7 +237,7 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="fa-solid fa-star"></i></span>
                     </div>
-                    <input type="number" id="rating" class="form-control input-sm no-spinner" placeholder="Đánh giá">
+                    <input type="number" id="rating" class="form-control input-sm no-spinner" placeholder="Đánh giá (từ 1 - 5)">
                   </div>
                   <span class="check" id="check-rating"></span>
                 </div>
@@ -258,16 +258,16 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="delete-modal-label">Delete Person</h5>
+            <h5 class="modal-title" id="delete-modal-label" style="font-size: 18px; font-weight: 600;">Xóa người dùng</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <p>Please enter the code of the person you want to delete:</p>
-            <div class="input-group mb-3">
-              <input type="text" class="form-control" id="delete-code" placeholder="Enter code...">
-              <button class="btn btn-danger" id="btnDelete">Xóa</button>
+            <p>Vui lòng nhập mã của người dùng bạn muốn xóa:</p>
+            <div class="input-group mb-3 d-flex justify-content-center align-items-center">
+              <input type="text" class="form-control my-3" id="delete-code" placeholder="Nhập mã...">
+              <button class="btn btn-danger" id="btnDelete" style="height: 40px;">Xóa</button>
             </div>
-            <p id="delete-info" class="text-danger"></p>
+            <p id="delete-info" class="check text-danger"></p>
           </div>
         </div>
       </div>

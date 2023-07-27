@@ -18,9 +18,9 @@ function validateInput(data, personType, code, usedCode, name, address, email, u
     $("#check-code").text("Không được để trống mã");
     isValid = false;
   } else {
-    const codeRegex = /^\d{6}$/;
+    const codeRegex = /^\d{5}$/;
     if (!codeRegex.test(code)) {
-      $("#check-code").text("Mã phải gồm sáu chữ số");
+      $("#check-code").text("Mã phải gồm năm chữ số");
       isValid = false;
     } else if (usedCode) {
       const codeInUse = data.list.some(person => person.code === code);
