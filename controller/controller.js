@@ -177,7 +177,7 @@ $("#list-person-table").on("click", ".edit-row", function () {
   const personType = $(this).data("person-type");
   $('#btnAdd').css('display', 'none');
   $('#btnEdit').css('display', 'inline-block');
-  const person = listPerson.list.find((p) => p.code === personCode);
+  const person = listPerson.list.find((p) => p.code === personCode.toString());
   $('#code').val(person.code);
   $('#name').val(person.name);
   $('#address').val(person.address);
