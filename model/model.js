@@ -16,7 +16,7 @@ class Student extends Person {
     this.physics = _physics;
     this.chemistry = _chemistry;
   }
-
+  // method tính điểm trung bình
   avgScore() {
     return (this.math + this.physics + this.chemistry) / 3;
   }
@@ -28,7 +28,7 @@ class Employee extends Person {
     this.day = _day;
     this.wage = _wage;
   }
-
+  // method tính lương
   salary() {
     return this.day * this.wage;
   }
@@ -45,19 +45,19 @@ class Customer extends Person {
 
 class ListPerson {
   constructor() {
+    // chặn không cho lặp lại instant
     if (listPersonInstance) {
       return listPersonInstance;
     }
-
     this.list = this.loadFromLocalStorage();
     listPersonInstance = this;
   }
-
+  // thêm người dùng
   addPerson(newPerson) {
     this.list.push(newPerson);
     this.saveToLocalStorage();
   }
-
+  // cập nhật người dùng
   update(code, person) {
     const index = this.list.findIndex((p) => p._code === code);
     if (index !== -1) {
@@ -65,7 +65,7 @@ class ListPerson {
       this.saveToLocalStorage();
     }
   }
-
+  // xóa người dùng
   deletePerson(code) {
     const personIndex = this.list.findIndex((person) => person.code === code);
     if (personIndex !== -1) {
@@ -73,14 +73,13 @@ class ListPerson {
       this.saveToLocalStorage();
     }
   }
-
+  // lấy danh sách
   getList() {
     return this.list;
   }
-
+  // lọc người dùng theo đối tượng
   filter(selectedType) {
     let filteredList = [];
-  
     if (selectedType === "all") {
       filteredList = [...this.list];
     } else {
@@ -96,18 +95,13 @@ class ListPerson {
         }
       });
     }
-  
     return { list: filteredList };
   }
-  
-  
-
-
-
+  // lưu danh sách vào local
   saveToLocalStorage() {
     localStorage.setItem('people', JSON.stringify(this.list));
   }
-
+  // load danh sách từ local
   loadFromLocalStorage() {
     const people = JSON.parse(localStorage.getItem('people')) || [];
     return people.map((person) => {

@@ -128,13 +128,19 @@ $('#btnDelete').on('click', deletePerson);
 
 
 
-// ẩn nút cập nhật hiện nút thêm
+// input mặc định cho modal thêm người mới
 $('#btn-modal').on('click', function () {
   $('#btnAdd').css('display', 'inline-block');
   $('#btnEdit').css('display', 'none');
+  $(`#studentRadio`).prop('checked', true);
   $('.person-type').prop('disabled', false);
   $('#code').prop('disabled', false);
+  $('#code').prop('disabled', false);
+  
 });
+
+
+
 
 
 // reset các đoạn text thông báo và input mỗi khi đóng modal
@@ -155,11 +161,6 @@ const resettypeInputs = () => {
   $('.check').text('');
 };
 
-const setDefaultPersonType = () => {
-  const defaultPersonType = 'student';
-  $(`#${defaultPersonType}Radio`).prop('checked', true);
-};
-
 const enableInputsByPersonType = personType => {
   // Enable/Disable General Inputs
   $('#product-form .form-group:not(#student-input, #employee-input, #customer-input)').find('input, select, textarea').prop('disabled', !(personType === 'student' || personType === 'employee' || personType === 'customer'));
@@ -167,23 +168,11 @@ const enableInputsByPersonType = personType => {
   // Enable/Disable type Inputs
   $('[id$="-input"]').find('input, select, textarea').each(function () {
     $(this).prop('disabled', !($(this).closest('[id$="-input"]').attr('id') === `${personType}-input`));
-    $(this).css('opacity', $(this).prop('disabled') ? 0.5 : 1);
   });
 
   // Reset all type inputs (Student, Employee, and Customer)
   resettypeInputs();
 };
-
-// Example usage
-$(document).ready(() => {
-  $('.person-type').on('change', event => enableInputsByPersonType(event.target.value));
-
-  // Set default person type to 'student' on page load
-  setDefaultPersonType();
-
-  // Enable inputs for the default person type (Student in this case)
-  enableInputsByPersonType();
-});
 
 
 // Add click event listener to each row with the class "edit-row"
@@ -308,3 +297,10 @@ $('.filter-person-type').on('change', filterListPerson);
 // testing
 // localStorage.clear();
 
+$(document).ready(() => {
+  $('.person-type').on('change', event => enableInputsByPersonType(event.target.value));
+
+  // Set default person type to 'student' on page load
+
+  // Enable inputs for the default person type (Student in this case)
+});

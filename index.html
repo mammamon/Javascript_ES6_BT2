@@ -30,20 +30,15 @@
         <h3><a href="#">QUẢN LÝ HỌC VIỆN</a></h3>
         <h4>|Admin|</h4>
       </div>
-      <div class="searchbox">
-        <form class="form-inline d-flex">
-          <input class="form-control rounded-0" id="searchTool" type="text"
-            placeholder="Tìm kiếm sản phẩm (nhập tên, model, giá, hãng,...)" aria-label="Search">
-        </form>
-      </div>
+
     </div>
   </div>
 
   <div class="admin__main container-fluid px-0">
     <div class="admin__sidebar d-flex justify-content-center sticky-top">
       <ul class="">
-        <li><a href="" title="Dashboard"><i class="fa fa-chart-line"></i></a></li>
-        <li><a href="" title="Quản lý sản phẩm" style="filter:contrast(1.5)"><i class="fa fa-cubes"></i></a></li>
+        <li><a href="" title="Thống kê"><i class="fa-solid fa-chart-line"></i></a></li>
+        <li><a href="" title="Danh sách người dùng" style="filter:contrast(1.5)"><i class="fa-solid fa-table-list"></i></i></a></li>
         <li><a href="" title="Hộp thư"><i class="fa fa-envelope"></i></a></li>
         <li><a href="" title="Cài đặt"><i class="fa fa-cog"></i></a></li>
       </ul>
@@ -54,12 +49,12 @@
         <div class="table-title d-flex align-items-center px-3 py-2">
           <h3>DANH SÁCH NGƯỜI DÙNG</h3>
           <div class="d-flex">
-              <select class="btn filter-person-type me-2">
-                <option value="all">Tất cả</option>
-                <option value="student">Học sinh</option>
-                <option value="employee">Nhân viên</option>
-                <option value="customer">Khách hàng</option>
-              </select>
+            <select class="btn filter-person-type me-2">
+              <option value="all">Tất cả</option>
+              <option value="student">Học sinh</option>
+              <option value="employee">Nhân viên</option>
+              <option value="customer">Khách hàng</option>
+            </select>
             <button id="btn-modal" class="btn me-2" style="background-color: #eee;" data-bs-toggle="modal"
               data-bs-target="#input-modal"><i class="fa fa-plus me-1"></i>
               thêm người dùng</button>
