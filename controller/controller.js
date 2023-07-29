@@ -126,6 +126,9 @@ $('#btn-modal').on('click', function () {
   $(`#studentRadio`).prop('checked', true);
   $('.person-type').prop('disabled', false);
   $('#code').prop('disabled', false);
+  $('#math').prop('disabled', false);
+  $('#physics').prop('disabled', false);
+  $('#chemistry').prop('disabled', false);
   $('#day').prop('disabled', true);
   $('#wage').prop('disabled', true);
   $('#company').prop('disabled', true);
